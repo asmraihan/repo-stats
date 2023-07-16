@@ -1,12 +1,27 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import React from 'react'
+import RepoCard from './RepoCard'
 
-type Props = {}
+type Props = {
+  repos: any[]
+}
 
-const CardList = (props: Props) => {
+
+const CardList = ({repos}: Props) => {
+  
   return (
-    <View>
-      <Text>CardList</Text>
+    <View className='my-4'>
+      <FlatList
+   
+        //create some data
+        data={repos}
+        renderItem={({ item }) => (
+          <RepoCard
+            repo={item}
+          ></RepoCard>
+        )}
+        keyExtractor={(item) => item?.id} //FIXME: keyExtractor should be unique
+      />
     </View>
   )
 }

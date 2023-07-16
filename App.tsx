@@ -4,6 +4,7 @@ import SearchBox from './components/SearchBox';
 import User from './components/User';
 import { useState, useCallback } from 'react';
 import Stats from './components/Stats';
+import CardList from './components/CardList';
 
 
 export type Data = {
@@ -11,11 +12,15 @@ export type Data = {
   followers: string | number,
   following: string | number,
   login: string,
+  created_at: string,
+  name: string,
   public_repos: string | number,
 }
 
 export default function App() {
   const [data, setData] = useState<Data>()
+  const [repos, setRepos] = useState<any>()
+  // console.log(repos)
   const search = useCallback((searchTerm: string) => {
     if (searchTerm == "") {
       alert("Please enter a username")
@@ -26,6 +31,11 @@ export default function App() {
       .then((data) => {
         setData(data)
       });
+    fetch(`https://api.github.com/users/${searchTerm}/repos`)
+      .then((res) => res.json())
+      .then((data) => {
+        setRepos(data)
+      });
   }, [])
   return (
     <SafeAreaView className='bg-slate-900 flex-1'>
@@ -34,8 +44,9 @@ export default function App() {
         {
           data &&
           (<>
-            <User src={data.avatar_url} userName={data.login} />
+            <User src={data.avatar_url} name={data.name} login={data.login} created_at={data.created_at} />
             <Stats data={data}/>
+            <CardList repos={repos}/>
           </>
           )
         }
